@@ -27,6 +27,8 @@ main() {
   invokeMethod(instanceMirror);
 
   invokeGetterSetter(person, instanceMirror);
+
+  testGenericType(person);
 }
 
 // 列出类的所有构造函数
@@ -76,6 +78,16 @@ invokeGetterSetter(Person person, InstanceMirror instanceMirror) {
   print(person.fullName);
 }
 
+testGenericType(Person person) {
+  ClosureMirror closureMirror = reflect(person.test);
+  ParameterMirror parameterMirror = closureMirror.function.parameters.first;
+  print(MirrorSystem.getName(parameterMirror.simpleName));
+  TypeMirror typeMirror = parameterMirror.type;
+  print(MirrorSystem.getName(typeMirror.simpleName));
+  print(MirrorSystem.getName(typeMirror.typeArguments[0].simpleName));
+  print(MirrorSystem.getName(typeMirror.typeVariables[0].simpleName));
+}
+
 class Person {
   String abbr;
   String full;
@@ -96,4 +108,6 @@ class Person {
   testNamedParam(p1, p2, {p3, p4}) {
     print('testNamedParam p1 = $p1, p2 = $p2, p3 = $p3, p4 = $p4');
   }
+
+  test(List<String> p) {}
 }
