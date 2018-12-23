@@ -15,7 +15,9 @@ main() {
     ..printX()
     ..printY();
 
-  ImmutablePoint immutablePoint = ImmutablePoint.origin;
+  ImmutablePoint point1 = const ImmutablePoint(0, 0);
+  ImmutablePoint point2 = const ImmutablePoint(0, 0);
+  print('point1 == point2 is ${point1 == point2}');
 
   var logger = Logger('BGA');
   logger = Logger('BGA');
@@ -103,8 +105,6 @@ class ImmutablePoint {
   final num y;
 
   const ImmutablePoint(this.x, this.y);
-
-  static final ImmutablePoint origin = const ImmutablePoint(0, 0);
 }
 
 class Logger {
@@ -169,11 +169,7 @@ abstract class AbstractContainer {
   void updateChildren(); // Abstract method.
 }
 
-enum Color {
-  red,
-  green,
-  blue
-}
+enum Color { red, green, blue }
 
 testEnum() {
   // 枚举类型中的每个值都有一个 index getter 函数，该函数返回该值在枚举类型定义中的位置（从 0 开始）
@@ -197,7 +193,6 @@ testEnum() {
   }
 }
 
-
 typedef int Compare(Object a, Object b);
 
 class SortedCollection {
@@ -208,7 +203,7 @@ class SortedCollection {
 
 int sort(Object a, Object b) => 0;
 
-@todo('','')
+@todo('', '')
 testTypeDef() {
   SortedCollection coll = new SortedCollection(sort);
   print(coll.compare is Function);
