@@ -1,4 +1,9 @@
 main() {
+  test1();
+  test2();
+}
+
+test1() {
   // 使用单引号或双引号创建字符串，都支持插值表达式
   String a = 'Hello';
   String b = "World";
@@ -60,4 +65,26 @@ main() {
   print('2'.compareTo('3')); // -1
   print('2'.compareTo('2')); // 0
   print('22'.compareTo('2')); // 1
+}
+
+/**
+ * Unicode 为每一个字符、标点符号、表情符号等都定义了 一个唯一的数值。
+ * 由于 Dart 字符串是 UTF-16 code units 字符序列，所以在字符串中表达 32-bit Unicode 值就需要新的语法了
+ */
+test2() {
+  var a = '\u{1f44f}';
+  print(a);
+  print(a.codeUnits);
+  print(a.runes.toList());
+
+  Runes b = Runes('\u2665  \u{1f605}  \u{1f60e}  \u{1f47b}  \u{1f596}  \u{1f44d}');
+  print(String.fromCharCodes(b));
+
+  // 字符串反转
+  var c = "BGA \u{1f605} bingoogolapple"; // BGA 😅 bingoogolapple
+  print(c);
+  print(String.fromCharCodes(c.runes.toList().reversed)); // 正确 elppalogoognib 😅 AGB
+  print(c.split('').reversed.join()); // 会出现乱码 elppalogoognib �� AGB
+
+
 }

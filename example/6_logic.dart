@@ -19,11 +19,22 @@ main() {
   print(i);
 
   var list = ['BGA', 'bingoogolapple', 'bingo', 'googol', 'apple'];
-  for(var index = 0; index < list.length; index++) {
+  for (var index = 0; index < list.length; index++) {
     print(list[index]);
   }
   print('--------------------------');
-  for(var item in list) {
+  for (var item in list) {
     print(item);
+  }
+
+  var command = 'CLOSED';
+  switch (command) {
+    case 'CLOSED':
+      print('CLOSED');
+      continue nowClosed;
+    nowClosed:
+    case 'NOW_CLOSED':
+      print('NOW_CLOSED');
+      break;
   }
 }

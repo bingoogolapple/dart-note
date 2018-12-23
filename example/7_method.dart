@@ -37,6 +37,8 @@ void main(List<String> args) {
   var func4 = (p1, {p2, p3}) {
     print('func4 p1 = $p1, p2 = $p2, p3 = $p3');
   };
+  func4 = (p1, {p2, p3}) => print('func4 p1 = $p1, p2 = $p2, p3 = $p3');
+
   func4(1);
   func4(1, p2: 2);
 
@@ -95,6 +97,12 @@ testNamedParam(p1, {p2, p3}) {
 // 命名可选参数可以指定默认值
 testNamedParamDefault(p1, {p2 = 'p2default', p3 = 'p3default'}) {
   print('testNamedParamDefault p1 = $p1, p2 = $p2, p3 = $p3');
+}
+
+// list 和 map 也可以设置默认值
+doStuff({List<int> list = const [1, 2, 3], Map<String, String> gifts = const {'first': 'paper', 'second': 'cotton', 'third': 'leather'}}) {
+  print('list:  $list');
+  print('gifts: $gifts');
 }
 
 // 位置可选参数，必须在最后
