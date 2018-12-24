@@ -1,4 +1,4 @@
-import 'package:dart_note/dart_note.dart';
+import 'package:bga_dart_note/bga_dart_note.dart';
 import 'package:test/test.dart';
 
 /**
