@@ -1,12 +1,16 @@
 main() {
   test1();
   test2();
+  test3();
 }
 
 test1() {
-  // 使用单引号或双引号创建字符串，都支持插值表达式
+// 使用单引号或双引号创建字符串，都支持插值表达式
   String a = 'Hello';
   String b = "World";
+  String ab = a + b;
+// Java 的 == 比较的是两个对象的引用，Dart 的 == 比较的是两个对象的值
+  print(ab == 'HelloWorld');
   String c = 'sd${1 + 1}s\ndf${b}fsd$a';
   print(c);
   String d = "sdsdfsdfsdf\nsd${1 + 1}sdf${a}sdf";
@@ -21,18 +25,18 @@ test1() {
   print(f);
 
   // 三个双引号或三个单引号原样输出，都支持插值表达式
-  String g = """第一${a}行$b
+  String g = """三个双引号第一${a}行$b
 第$a二行$b
 第\n三行
 """; // 最后这里有换行
   print(g);
-  String h = '''第一${a}行$b
+  String h = '''三个单引号第一${a}行$b
 第$a二行$b
 第\n三行
 ''';
   print(h);
 
-  // 使用 r 创建原始字符串，会忽略转移字符
+  // 在引号前面添加 r 创建原始字符串，会忽略转义字符
   String i = r"第一行\n第二行";
   print(i);
   String j = r'第一行\n第二行';
@@ -85,6 +89,15 @@ test2() {
   print(c);
   print(String.fromCharCodes(c.runes.toList().reversed)); // 正确 elppalogoognib 😅 AGB
   print(c.split('').reversed.join()); // 会出现乱码 elppalogoognib �� AGB
+}
 
+test3() {
+  // 使用「对象?.属性」时，如果对象为空则结果为 null，且捕获抛空指针异常
+  StringBuffer stringBuffer;
+  stringBuffer?.write('sdf');
 
+  stringBuffer = new StringBuffer();
+  // 通过「.. 」来实现对一个对象的属性和函数进行连续操作，让代码更清晰
+  stringBuffer..write("BGA")..write("bingo")..write("googol")..write("apple");
+  print(stringBuffer);
 }

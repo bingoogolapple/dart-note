@@ -56,3 +56,25 @@ test3() async {
   }
   print('test3');
 }
+
+testException() {
+  try {
+    // 可能引发异常的代码
+  } on IntegerDivisionByZeroException {
+    print('IntegerDivisionByZeroException');
+
+    // 可以重新抛出，错误堆栈信息为原始错误位置
+    rethrow;
+  } on FormatException catch (e1) {
+    print(e1);
+    // 抛出异常，错误堆栈信息为当前位置
+    throw e1;
+  } catch (e2) {
+    // 捕获所有异常
+    print(e2);
+    // 可以重新抛出，错误堆栈信息为原始错误位置
+    rethrow;
+  } finally {
+    print('在 try、on、catch 之后无条件执行可选的 finally 块');
+  }
+}
