@@ -1,5 +1,10 @@
 import 'dart:math';
 
+/**
+ * Dart 没有表示访问权限的关键字，而是用符号名表示访问权限
+ * 另外，Dart 中不存在针对类的访问权限，只有针对包（package）的
+ * 凡以「_」（下划线）开头的符号（变量、类、函数等等）都是包内可见的，否则是包内外都可见的
+ */
 main() {
   // .. 语法为级联调用。使用级联调用语法可以在一个对象上执行多个操作
   var a = ChildPoint.test3(3, 4)
@@ -33,6 +38,8 @@ main() {
   print('after right is ${rect.right}');
 
   testTypeDef();
+
+  testSingleton();
 }
 
 class Point {
@@ -53,6 +60,9 @@ class Point {
 //  }
 
   Point(this.x, this.y) : distance = sqrt(x * x + y * y);
+
+  // 命名构造函数：构造函数的函数名后加「.自己的名字」
+  Point.named(this.x, this.y, this.distance);
 
   // 重定向构造方法
   Point.alongXAxis(x) : this(x, 0);
@@ -81,6 +91,10 @@ class Point {
 
   void printY() {
     print("printY");
+  }
+
+  Point operator +(Point other) {
+    return new Point(this.x + other.x, this.y + other.y);
   }
 
   static num distanceBetween(Point a, Point b) {
@@ -228,10 +242,69 @@ class Person {
   String greet(who) => 'Hello, $who. I am $_name.';
 }
 
-// An implementation of the Person interface.
+// Dart 每个类都是接口
 class Imposter implements Person {
   // We have to define this, but we don't use it.
   final _name = "";
 
   String greet(who) => 'Hi $who. Do you know who I am?';
+}
+
+testSingleton() {
+  SingletonOne singletonOne1 = SingletonOne();
+  SingletonOne singletonOne2 = SingletonOne.instance;
+
+  SingletonOne singletonOne3 = SingletonOne._instance;
+  SingletonOne singletonOne4 = SingletonOne._internal();
+  print('singletonOne1 is ${singletonOne1.hashCode}');
+  print('singletonOne2 is ${singletonOne2.hashCode}');
+  print('singletonOne3 is ${singletonOne3.hashCode}');
+  print('singletonOne4 is ${singletonOne4.hashCode}');
+
+  SingletonTwo singletonTwo1 = new SingletonTwo();
+  SingletonTwo singletonTwo2 = SingletonTwo.instance;
+
+  SingletonTwo singletonTwo3 = SingletonTwo._instance;
+  SingletonTwo singletonTwo4 = SingletonTwo._getInstance();
+  SingletonTwo singletonTwo5 = SingletonTwo._internal();
+  print('singletonTwo1 is ${singletonTwo1.hashCode}');
+  print('singletonTwo2 is ${singletonTwo2.hashCode}');
+  print('singletonTwo3 is ${singletonTwo3.hashCode}');
+  print('singletonTwo4 is ${singletonTwo4.hashCode}');
+  print('singletonTwo5 is ${singletonTwo5.hashCode}');
+}
+
+// 饿汉式
+class SingletonOne {
+  static final SingletonOne _instance = new SingletonOne._internal();
+
+  static SingletonOne get instance => _instance;
+
+  factory SingletonOne() {
+    return _instance;
+  }
+
+//  SingletonOne._internal();
+  SingletonOne._internal() {
+    // 初始化
+  }
+}
+
+// 懒汉式
+class SingletonTwo {
+  static SingletonTwo get instance => _getInstance();
+  static SingletonTwo _instance;
+
+  factory SingletonTwo() => _getInstance();
+
+  SingletonTwo._internal() {
+    // 初始化
+  }
+
+  static SingletonTwo _getInstance() {
+    if (_instance == null) {
+      _instance = new SingletonTwo._internal();
+    }
+    return _instance;
+  }
 }
