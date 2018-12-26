@@ -40,12 +40,25 @@ main() {
   testTypeDef();
 
   testSingleton();
+  testDynamicAndObject();
 }
 
+// 和 Java 一样通过 class 关键字定义类
 class Point {
-  final int x;
-  final int y;
-  final double distance;
+  // 定义静态变量
+  static int a = 1;
+
+  // 定义属性
+  int x;
+  int y;
+  double distance;
+
+  // Dart 中每一个属性默认都有 getter 和 setter 方法，我们也可以自定义属性的 getter 和 setter
+//  bool get isFar {
+//    return distance > 1000;
+//  }
+
+  bool get isFart => distance > 100;
 
 //  Point(x, y)
 //      : x = x,
@@ -54,14 +67,15 @@ class Point {
 //    // TODO 做其他事情
 //  }
 
-  // 上面的简化写法
+  // 上面的简化写法。构造方法中支持「this.属性名」语法糖，传入参数时自动赋值，不用像 Java 那样挨个写 this.xxx = xxxx
 //  Point(this.x, this.y) : distance = sqrt(x * x + y * y) {
 //    // TODO 做其他事情
 //  }
 
+  // 上面的简化写法
   Point(this.x, this.y) : distance = sqrt(x * x + y * y);
 
-  // 命名构造函数：构造函数的函数名后加「.自己的名字」
+  // 命名构造方法：类名后加「.自己的名字」
   Point.named(this.x, this.y, this.distance);
 
   // 重定向构造方法
@@ -93,10 +107,12 @@ class Point {
     print("printY");
   }
 
+  // 通过 operator 关键字重载操作符
   Point operator +(Point other) {
     return new Point(this.x + other.x, this.y + other.y);
   }
 
+  // 定义静态方法
   static num distanceBetween(Point a, Point b) {
     var dx = a.x - b.x;
     var dy = a.y - b.y;
@@ -111,8 +127,12 @@ class ChildPoint extends Point {
 }
 
 /**
- * 如果你的类提供一个状态不变的对象，你可以把这些对象定义为编译时常量。
- * 需要定义一个 const 构造函数，并且声明所有类的变量为 final
+ * 如果你的类提供一个状态不变的对象，可以把这些对象定义为编译时常量。
+ * 需要定义一个 const 构造方法，并且声明所有类的变量为 final。这在 Flutter 中用的比较多
+ *
+ * ImmutablePoint point1 = const ImmutablePoint(0, 0);
+ * ImmutablePoint point2 = const ImmutablePoint(0, 0);
+ * print('point1 == point2 is ${point1 == point2}');
  */
 class ImmutablePoint {
   final num x;
@@ -170,10 +190,14 @@ class Rectangle {
 
   Rectangle(this.left, this.top, this.width, this.height);
 
+  // Dart 中每一个属性默认都有 getter 和 setter 方法，我们也可以自定义属性的 getter 和 setter
   num get right => left + width;
 
   set right(num value) => left = value - width;
 
+//  num get bottom {
+//    return top + height;
+//  }
   num get bottom => top + height;
 
   set bottom(num value) => top = value - height;
@@ -307,4 +331,29 @@ class SingletonTwo {
     }
     return _instance;
   }
+}
+
+testDynamicAndObject() {
+  Object a = 'BGA';
+  a = 27;
+  a.toString(); // 只能调用 Object 支持的方法
+
+  dynamic b = 'BGA';
+  // 可以通过编译，但运行时会报错
+//  b.sdf = 1; // NoSuchMethodError: Class 'String' has no instance setter 'sdf='.
+//  b.sdfsdf(); // NoSuchMethodError: Class 'String' has no instance method 'sdfsdf'.
+//  b[1] = 'b'; // NoSuchMethodError: Class 'String' has no instance method '[]='.
+
+  // Dart 提供了关键字 is 进行类型检测
+  if (a is int) {
+    // 通过类型检测后 Dart 知道 a 为 int 类型，所以这里不需要强制类型转换
+    a.toDouble();
+  }
+  if (b is String) {
+    b.toLowerCase();
+  }
+
+  // Dart 也提供了 as 让我们进行类型的强制转换，但为了安全的转换，更推荐使用 is
+  (a as int).toDouble();
+  (b as String).toLowerCase();
 }
