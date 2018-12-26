@@ -71,12 +71,24 @@ testAsync() async {
   print('testAsync 调用了 testFutureAsyncAwait');
 }
 
-main() {
-//  testAsync();
-//  testNotAsync();
-
+testMicrotask() {
+  // Microtask 是在 Event Queue 中的某一个 Event 处理完后才会执行，而不是在执行 Event 期间插进去执行的
   scheduleMicrotask(() {
     print('microtask');
   });
-  print('main');
+  print('testMicrotask');
+  StringBuffer stringBuffer = StringBuffer();
+  for (int i = 0; i < 1000000; i++) {
+    stringBuffer.write(i);
+  }
+  print(stringBuffer.toString());
+//  testMicrotask
+//  0123456.........
+//  microtask
+}
+
+main() {
+//  testAsync();
+//  testNotAsync();
+  testMicrotask();
 }

@@ -1,17 +1,8 @@
-main() {
-  Node child11 = Node('child11', []);
-  Node child12 = Node('child12', []);
+class Node {
+  List<Node> children;
+  String name;
 
-  Node child21 = Node('child21', []);
-  Node child22 = Node('child22', []);
-
-  Node child1 = Node('child1', [child11, child12]);
-  Node child2 = Node('child2', [child21, child22]);
-
-  Node root = Node('root', [child1, child2]);
-  for (Node node in forAllChildren(root)) {
-    print(node.name);
-  }
+  Node(this.name, this.children);
 }
 
 /**
@@ -38,9 +29,18 @@ Iterable<Node> forAllChildren(Node parentNode) sync* {
   }
 }
 
-class Node {
-  List<Node> children;
-  String name;
+main() {
+  Node child11 = Node('child11', []);
+  Node child12 = Node('child12', []);
 
-  Node(this.name, this.children);
+  Node child21 = Node('child21', []);
+  Node child22 = Node('child22', []);
+
+  Node child1 = Node('child1', [child11, child12]);
+  Node child2 = Node('child2', [child21, child22]);
+
+  Node root = Node('root', [child1, child2]);
+  for (Node node in forAllChildren(root)) {
+    print(node.name);
+  }
 }

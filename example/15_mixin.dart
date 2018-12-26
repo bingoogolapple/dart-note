@@ -2,6 +2,8 @@
  * 假设我们有两个类 S、A，现在需要使用 mixin 定义类 T「class T = A with S;」
  * 那我们得到的 class T 是怎么样的呢？假设 MA 表示 A 中的所有方法，MS 表示 S 中的所有方法，那么 T 中的方法集合为「MS U (MA - MS)」，即 T 中的方法为 A 和 S 方法的集合，如果有重复，取 S 中的
  * 复杂一点的情况「class T = B with A, S;」相当于「class T = (B with A) with S;」
+ *
+ * 属性和方法是一样的
  */
 class S {
   a() {
@@ -119,6 +121,7 @@ abstract class Fish extends Animal {}
  * Error: The class 'Flyer' is abstract and can't be instantiated
  */
 abstract class Flyer {
+  String name = "飞";
   /**
    * 没有未命名的无参构造方法 => 限制被继承
    * Error: The superclass, 'Flyer', has no unnamed constructor that takes no arguments
@@ -136,6 +139,8 @@ abstract class Flyer {
  * Error: The class 'Swimmer' is abstract and can't be instantiated
  */
 mixin Swimmer {
+  String name = "游泳";
+
   swim() {
     print("${runtimeType} swimming");
   }
@@ -143,6 +148,8 @@ mixin Swimmer {
 
 // on 关键字表示使用这个 mixin 时，这个类必须「继承或实现」Animal，因为 mixin 使用了 Animal 提供的功能（既 eat 方法）
 mixin Walker on Animal {
+  String name = "走路";
+
   walk() {
     print("${runtimeType} walking");
     super.eat();
@@ -164,7 +171,9 @@ class Cat extends Mammal with Walker {}
 class Dove extends Bird with Walker, Flyer {}
 
 // 鸭子
-class Duck extends Bird with Walker, Swimmer, Flyer {}
+class Duck extends Bird with Walker, Swimmer, Flyer {
+  String name = "鸭子";
+}
 
 // 鲨鱼
 class Shark extends Fish with Swimmer {}
@@ -180,17 +189,21 @@ testAnimal() {
   // Dove flying
   // Dove walking
   // Dove eating
-  new Dove()
+  // 飞
+  Dove dove = new Dove()
     ..fly()
     ..walk();
+  print(dove.name);
   // Duck flying
   // Duck walking
   // Duck eating
   // Duck swimming
-  new Duck()
+  // 鸭子 因为鸭子类里复写了 name 属性
+  Duck duck = new Duck()
     ..fly()
     ..walk()
     ..swim();
+  print(duck.name);
 }
 
 main() {

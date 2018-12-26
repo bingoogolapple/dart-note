@@ -38,6 +38,7 @@ testSingleSubscription() {
 }
 
 testBroadcastStream() {
+  // BroadcastStream 可以被订阅多次，后订阅的不会收到「已经发送过的」数据，「订阅之前加的且订阅时还未发送过的数据」也能被接收
   Stream stream = getStream().asBroadcastStream();
   stream
       .where((data) {
@@ -52,18 +53,20 @@ testBroadcastStream() {
         print("testBroadcastStream1 onDone");
       }, cancelOnError: false);
 
-  stream
-      .where((data) {
-        return true;
-      })
-      .take(5)
-      .listen((data) {
-        print("testBroadcastStream2 listen $data");
-      }, onError: (e) {
-        print("testBroadcastStream2 onError $e");
-      }, onDone: () {
-        print("testBroadcastStream2 onDone");
-      }, cancelOnError: false);
+  scheduleMicrotask(() {
+    stream
+        .where((data) {
+          return true;
+        })
+        .take(5)
+        .listen((data) {
+          print("testBroadcastStream2 listen $data");
+        }, onError: (e) {
+          print("testBroadcastStream2 onError $e");
+        }, onDone: () {
+          print("testBroadcastStream2 onDone");
+        }, cancelOnError: false);
+  });
 }
 
 testIntStream() {
@@ -87,6 +90,6 @@ testIntStream() {
 
 main() {
 //  testSingleSubscription();
-//  testBroadcastStream();
-  testIntStream();
+  testBroadcastStream();
+//  testIntStream();
 }

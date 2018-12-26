@@ -4,7 +4,7 @@ part 'bird.dart';
 
 part 'fish.dart';
 
-/// # 学习发布 Dart 库发布
+/// # 学习发布 Dart 库
 ///
 /// ## 测试 Markdown
 abstract class Animal {

@@ -1,4 +1,4 @@
-import 'package:bga_dart_note/bga_dart_note.dart' as lib; // 使用 as 关键字为导入的库设置命名空间，使用时通过「别名.类名」
+import 'package:bga_dart_note/bga_dart_note.dart' as lib; // 使用 as 关键字为导入的库设置命名空间，使用时通过「命名空间.类名」
 import 'package:bga_dart_note/bga_dart_note.dart' hide Person; // 除了 Person 类，其他的类都导入
 import 'package:bga_dart_note/bga_dart_note.dart' show Student; // 只导入 Student 类
 import 'person.dart' as example;
