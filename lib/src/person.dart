@@ -1,9 +1,14 @@
-library dart_note.src.person;
-
 class Person {
   String name;
+  int _age;
 
-  Person(this.name);
+  int get age => _age;
 
-  String toString() => name;
+  Person(this.name) {
+    _age = 27;
+    print('实例 lib 里的 Person $name');
+  }
+
+  @override
+  String toString() => 'lib 里的 Person[name=$name, age=$_age]';
 }

@@ -21,11 +21,11 @@ void main() {
   });
 
   group('TestA', () {
-    Awesome awesome;
+    Person person;
 
     // 在每个单元测试执行前都会执行
     setUp(() {
-      awesome = Awesome();
+      person = Person('BGA');
       print('TestA setUp');
     });
 
@@ -46,7 +46,7 @@ void main() {
 
     test('TestA1', () {
       print('TestA1');
-      expect(awesome.isAwesome, isTrue);
+      expect(person.age == 27, isTrue);
     });
 
     test('TestA2', () {

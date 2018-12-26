@@ -1,5 +1,3 @@
-library dart_note.src.student;
-
 import 'person.dart';
 
 class Student extends Person {
@@ -7,5 +5,5 @@ class Student extends Person {
 
   String id = '';
 
-  String toString() => 'Name:$name  ID:$id';
+  String toString() => '[name=$name, age=$age, id=$id]';
 }
