@@ -1,24 +1,13 @@
 import 'dart:mirrors';
 
 main() {
-  // 如果在写代码的时候，已经知道 symbol 的名字了，则可以使用「#符号名字」的方式直接使用
-  const className = #Person;
-  print(MirrorSystem.getName(className));
-
-  var person = Person('BGA', 'bingoogolapple', 3333);
-  // 在开始使用之前，需要将一个类作为 reflectClass 方法的参数来获取到 ClassMirror
-  ClassMirror classMirror = reflectClass(Person);
-  // 也可以在实例上调用 runtimeType 获取该对象的 Type
-  classMirror = reflectClass(person.runtimeType);
+  var person = testNewInstance();
+  // 也可以在实例上调用 runtimeType 获取该对象的 Type，然后再通过 reflectClass 获取 ClassMirror
+  ClassMirror classMirror = reflectClass(person.runtimeType);
   // 也可以将一个实例作为 reflect 方法的参数来获取到 InstanceMirror
   InstanceMirror instanceMirror = reflect(person);
   // 通过 reflectee 获取反射的目标对象，通过 identical 检测两个引用是否为同一个对象
-  print(identical(instanceMirror.reflectee, person));
-
-  classMirror = instanceMirror.type;
-
-  Symbol symbol = classMirror.simpleName;
-  print(MirrorSystem.getName(symbol));
+  print(identical(instanceMirror.reflectee, person)); // true
 
   showConstructors(classMirror);
 
@@ -29,6 +18,32 @@ main() {
   invokeGetterSetter(person, instanceMirror);
 
   testGenericType(person);
+}
+
+// 通过反射实例化 Person 对象
+Person testNewInstance() {
+  // 如果在写代码的时候，已经知道 symbol 的名字了，则可以使用「#符号名字」的方式直接使用
+  Symbol classSymbol = #Person;
+  print(MirrorSystem.getName(classSymbol));
+
+  // 在开始使用之前，需要将一个类作为 reflectClass 方法的参数来获取到 ClassMirror
+  ClassMirror classMirror = reflectClass(Person);
+  // 通过 newInstance 创建 InstanceMirror 实例
+  InstanceMirror instanceMirror = classMirror.newInstance(Symbol("test"), ['BGA', 'bingoogolapple', 27]);
+  // 通过 reflectee 获取反射的目标对象
+  dynamic person = instanceMirror.reflectee;
+  // Dart 提供了关键字 is 进行类型检测
+  if (person is Person) {
+    print('有通过 newInstance 实例化');
+    // 通过类型检测后 Dart 知道 person 为 Person 类型，所以这里不需要强制类型转换
+    print(person.age);
+    print(person.full);
+    print(person.fullName);
+    return person;
+  } else {
+    print('没有通过 newInstance 实例化');
+    return null;
+  }
 }
 
 // 列出类的所有构造函数
@@ -67,6 +82,7 @@ invokeMethod(InstanceMirror instanceMirror) {
   instanceMirror.invoke(#testNamedParam, [1, 2], {#p3: 3, #p4: 4});
 }
 
+// 执行 getter 和 setter 方法
 invokeGetterSetter(Person person, InstanceMirror instanceMirror) {
   // 获取属性
   var fullName = instanceMirror.getField(#full).reflectee;
@@ -78,6 +94,7 @@ invokeGetterSetter(Person person, InstanceMirror instanceMirror) {
   print(person.fullName);
 }
 
+// 获取泛型
 testGenericType(Person person) {
   ClosureMirror closureMirror = reflect(person.test);
   ParameterMirror parameterMirror = closureMirror.function.parameters.first;
@@ -95,6 +112,7 @@ class Person {
 
   Person(this.abbr, this.full, this.age);
 
+  // 命名构造方法
   Person.test(this.abbr, this.full, this.age);
 
   String get fullName => '$abbr $full';
@@ -109,5 +127,6 @@ class Person {
     print('testNamedParam p1 = $p1, p2 = $p2, p3 = $p3, p4 = $p4');
   }
 
+  // 用于测试获取泛型参数
   test(List<String> p) {}
 }

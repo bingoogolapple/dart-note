@@ -1,80 +1,82 @@
 import 'dart:async';
 
-main() {
-  test1();
-  test2();
-  test3();
-  print('main');
-}
-
-Future<String> demo1() {
+// 返回一个延迟 2 秒后正常执行的 Future
+Future<String> successFuture(String msg) {
 //  return Future<String>(() {
 //    return "demo1";
 //  });
 
   return Future<String>.delayed(Duration(milliseconds: 2000), () {
-    return 'demo1';
+    return '$msg 调用的 successFuture';
   });
 }
 
-test1() {
-  demo1().then((value) {
+// 返回一个延迟 2 秒后会抛异常的 Future
+Future<String> errorFuture(String msg) {
+  return Future<String>.delayed(Duration(milliseconds: 2000), () {
+    throw Exception('$msg 调用的 errorFuture Exception');
+  });
+}
+
+// 使用 then、catchError 方式执行 Future
+testFuture() {
+  successFuture('testFuture').then((value) {
+    print(value);
+    return value + "对数据做一次加工";
+  }).then((value) {
     print(value);
   }).catchError((error) {
-    print('test1 catchError');
+    print('testFuture successFuture catchError');
   });
-  print('test1');
-}
+  print('testFuture 调用了 successFuture');
 
-Future<String> demo2() {
-  return Future<String>.delayed(Duration(milliseconds: 2000), () {
-    throw Exception('demo2 Exception');
-  });
-}
-
-test2() {
-  demo2().then((value) {
+  errorFuture('testFuture').then((value) {
     print(value);
   }).catchError((error) {
-    print('test2 catchError $error');
+    print('testFuture errorFuture catchError $error');
   });
-  print('test2');
+  print('testFuture 调用了 errorFuture');
 }
 
-Future<String> demo3() {
-  return Future<String>.delayed(Duration(milliseconds: 2000), () {
-    return 'demo3';
-  });
-}
-
-test3() async {
+// 使用 async、await 方式执行 Future，官方推荐使用这种方式。要使用 await，方法必须是 async 的
+testFutureAsyncAwait() async {
   try {
-    String result = await demo3();
+    String result = await successFuture('testFutureAsyncAwait');
     print(result);
   } catch (e) {
-    print('test3 catchError $e');
+    print('testFutureAsyncAwait successFuture catchError $e');
   }
-  print('test3');
+  print('testFutureAsyncAwait 调用了 successFuture');
+
+  try {
+    String result = await errorFuture('testFutureAsyncAwait');
+    print(result);
+  } catch (e) {
+    print('testFutureAsyncAwait errorFuture catchError $e');
+  }
+  print('testFutureAsyncAwait 调用了 errorFuture');
 }
 
-testException() {
-  try {
-    // 可能引发异常的代码
-  } on IntegerDivisionByZeroException {
-    print('IntegerDivisionByZeroException');
+testNotAsync() {
+  testFuture();
+  print('testNotAsync 调用了 testFuture');
+  testFutureAsyncAwait();
+  print('testNotAsync 调用了 testFutureAsyncAwait');
+}
 
-    // 可以重新抛出，错误堆栈信息为原始错误位置
-    rethrow;
-  } on FormatException catch (e1) {
-    print(e1);
-    // 抛出异常，错误堆栈信息为当前位置
-    throw e1;
-  } catch (e2) {
-    // 捕获所有异常
-    print(e2);
-    // 可以重新抛出，错误堆栈信息为原始错误位置
-    rethrow;
-  } finally {
-    print('在 try、on、catch 之后无条件执行可选的 finally 块');
-  }
+testAsync() async {
+  testFuture();
+  print('testAsync 调用了 testFuture');
+  await testFutureAsyncAwait();
+  print('testAsync 调用了 testFutureAsyncAwait');
+}
+
+main() {
+//  testAsync();
+//  testNotAsync();
+
+  scheduleMicrotask(() {
+    print('microtask');
+  });
+  print('main');
 }

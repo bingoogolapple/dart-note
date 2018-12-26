@@ -207,10 +207,11 @@ abstract class AbstractContainer {
   void updateChildren(); // Abstract method.
 }
 
+// 和 Java 一样使用 enum 定义枚举，不过 Dart 中的枚举不支持定义属性和方法
 enum Color { red, green, blue }
 
 testEnum() {
-  // 枚举类型中的每个值都有一个 index getter 函数，该函数返回该值在枚举类型定义中的位置（从 0 开始）
+  // 枚举类型中的每个值都有一个 index getter 函数，该函数返回该值是其在枚举类型定义中的位置（从 0 开始）
   assert(Color.red.index == 0);
   assert(Color.green.index == 1);
   assert(Color.blue.index == 2);
@@ -231,23 +232,34 @@ testEnum() {
   }
 }
 
-typedef int Compare(Object a, Object b);
+// 给函数起一个别名，使用比较方便，而且还支持泛型。例如定义一个方法的回调，直接使用别名定义
+//typedef int Compare<T>(T a, T b);
+typedef Compare<T> = int Function(T a, T b);
 
 class SortedCollection {
-  Compare compare;
+  Function compare1;
+  Compare<int> compare2;
 
-  SortedCollection(this.compare);
+  SortedCollection(int compare1(Object a, Object b), this.compare2) {
+    this.compare1 = compare1;
+  }
 }
 
-int sort(Object a, Object b) => 0;
+int sort1(Object a, Object b) => 0;
+int sort2(int a, int b) => a - b;
+
+testTypeDef() {
+  SortedCollection coll = new SortedCollection(sort1, sort2);
+  print(coll.compare2 is Function); // true
+  print(coll.compare2 is Compare<int>); // true
+  print(coll.compare1); // Closure: (Object, Object) => int from Function 'sort1': static.
+  print(coll.compare2); // Closure: (int, int) => int from Function 'sort2': static.
+}
 
 @todo('', '')
-testTypeDef() {
-  SortedCollection coll = new SortedCollection(sort);
-  print(coll.compare is Function);
-  print(coll.compare is Compare);
-}
+testTodo() {
 
+}
 class todo {
   final String who;
   final String what;
@@ -255,23 +267,50 @@ class todo {
   const todo(this.who, this.what);
 }
 
-class Person {
-  // In the interface, but visible only in this library.
-  final _name;
+abstract class Person {
+  // 在接口中，在类中
+  int _name;
 
-  // Not in the interface, since this is a constructor.
+  // 没在接口中，在类中
   Person(this._name);
 
-  // In the interface.
-  String greet(who) => 'Hello, $who. I am $_name.';
+  // 在接口和类中
+  String test1(who) => 'Person test1：Hello, $who. I am $_name.';
+
+  // 在接口和类中
+  String test2() => 'Person test2：I am $_name.';
+
+  // 在接口和类中，抽象方法和接口方法不用写方法体
+  String test3();
 }
 
-// Dart 每个类都是接口
-class Imposter implements Person {
-  // We have to define this, but we don't use it.
-  final _name = "";
+// Dart 中每个类都是接口，实现接口时必须重写接口里的所有方法
+class TestImplements implements Person {
+  // 如果接口中有属性，必须重新定义接口中的属性，只是这里不会使用它
+  int _name;
 
-  String greet(who) => 'Hi $who. Do you know who I am?';
+  @override
+  String test1(who) => 'TestImplements test1：Hi $who. Do you know who I am?';
+
+  @override
+  String test2() {
+    return 'TestImplements test2：I am $_name.';
+  }
+
+  @override
+  String test3() {
+    return 'TestImplements test3';
+  }
+}
+
+// 继承抽象类时必须实现里面的抽象方法
+class TestExtends extends Person {
+  TestExtends(name) : super(name);
+
+  @override
+  String test3() {
+    return 'TestExtends test3';
+  }
 }
 
 testSingleton() {
@@ -356,4 +395,26 @@ testDynamicAndObject() {
   // Dart 也提供了 as 让我们进行类型的强制转换，但为了安全的转换，更推荐使用 is
   (a as int).toDouble();
   (b as String).toLowerCase();
+}
+
+testException() {
+  try {
+    // 可能引发异常的代码
+  } on IntegerDivisionByZeroException {
+    print('IntegerDivisionByZeroException');
+
+    // 可以重新抛出，错误堆栈信息为原始错误位置
+    rethrow;
+  } on FormatException catch (e1) {
+    print(e1);
+    // 抛出异常，错误堆栈信息为当前位置
+    throw e1;
+  } catch (e2) {
+    // 捕获所有异常
+    print(e2);
+    // 可以重新抛出，错误堆栈信息为原始错误位置
+    rethrow;
+  } finally {
+    print('在 try、on、catch 之后无条件执行可选的 finally 块');
+  }
 }

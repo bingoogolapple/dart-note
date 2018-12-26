@@ -131,7 +131,7 @@ abstract class Flyer {
 }
 
 /**
- * 或者直接使用 mixin 关键之定义 mixin，默认限制了不能被继承、不能被实例化
+ * 或者直接使用 mixin 关键字定义 mixin，默认限制了不能被继承、不能被实例化
  * Error: The type 'Swimmer' can't be used as supertype
  * Error: The class 'Swimmer' is abstract and can't be instantiated
  */
@@ -191,17 +191,6 @@ testAnimal() {
     ..fly()
     ..walk()
     ..swim();
-  /**
-   *
-      Bat flying
-      Dove flying
-      Dove walking
-      Dove eating
-      Duck flying
-      Duck walking
-      Duck eating
-      Duck swimming
-   */
 }
 
 main() {
