@@ -8,7 +8,7 @@ main() async {
   print('have request');
   var response = await request.close();
   print('have response');
-  var data = await response.transform(utf8.decoder).toList();
+  var data = await utf8.decoder.bind(response).toList();
   var body = data.join('');
   print(body);
   httpClient.close();
