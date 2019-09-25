@@ -10,6 +10,11 @@ environment:
 dependencies:
   args: ^1.5.1
   decimal: ^0.3.5
+  http_server: ^0.9.8+3 # https://pub.flutter-io.cn/packages/http_server
+
+  http_multi_server: ^2.1.0 # https://pub.flutter-io.cn/packages/http_multi_server
+
+  shelf_router: ^0.7.1 # https://pub.flutter-io.cn/packages/shelf_router
 
 dev_dependencies:
   test: ^1.6.11
