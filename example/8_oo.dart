@@ -37,10 +37,14 @@ main() {
   rect.right++;
   print('after right is ${rect.right}');
 
+  testEnum();
+
   testTypeDef();
 
   testSingleton();
   testDynamicAndObject();
+
+  testException();
 }
 
 // 和 Java 一样通过 class 关键字定义类
@@ -127,7 +131,7 @@ class ChildPoint extends Point {
 }
 
 /**
- * 如果你的类提供一个状态不变的对象，可以把这些对象定义为编译时常量。
+ * 如果你的类提供一个状态不变的对象（其实也相当于注解），可以把这些对象定义为编译时常量。
  * 需要定义一个 const 构造方法，并且声明所有类的变量为 final。这在 Flutter 中用的比较多
  *
  * ImmutablePoint point1 = const ImmutablePoint(0, 0);
@@ -227,6 +231,8 @@ testEnum() {
     case Color.green:
       print('Green as grass!');
       break;
+//    case Color.blue:
+//      break;
     default:
       print(aColor);
   }
@@ -284,10 +290,14 @@ abstract class Person {
   String test3();
 }
 
-// Dart 中每个类都是接口，实现接口时必须重写接口里的所有方法
+// 将 Person 作为接口使用。Dart 中每个类都是接口，实现接口时必须重写接口里的所有方法
 class TestImplements implements Person {
-  // 如果接口中有属性，必须重新定义接口中的属性，只是这里不会使用它
+  // 如果接口中有属性，必须重新定义接口中的属性。或者不定义该属性，但要定义其 getter、setter 方法
+  @override
   int _name;
+
+//  int get _name => 1;
+//  set _name (name) => _name = name;
 
   @override
   String test1(who) => 'TestImplements test1：Hi $who. Do you know who I am?';
@@ -303,7 +313,7 @@ class TestImplements implements Person {
   }
 }
 
-// 继承抽象类时必须实现里面的抽象方法
+// 将 Person 作为抽象类使用。继承抽象类时必须实现里面的抽象方法，不用像当做接口使用那样重新定义接口中的数据或getter、setter方法
 class TestExtends extends Person {
   TestExtends(name) : super(name);
 
@@ -318,7 +328,7 @@ testSingleton() {
   SingletonOne singletonOne2 = SingletonOne.instance;
 
   SingletonOne singletonOne3 = SingletonOne._instance;
-  SingletonOne singletonOne4 = SingletonOne._internal();
+  SingletonOne singletonOne4 = SingletonOne._internal(); // 不要在单例类外部调用
   print('singletonOne1 is ${singletonOne1.hashCode}');
   print('singletonOne2 is ${singletonOne2.hashCode}');
   print('singletonOne3 is ${singletonOne3.hashCode}');
@@ -327,9 +337,9 @@ testSingleton() {
   SingletonTwo singletonTwo1 = new SingletonTwo();
   SingletonTwo singletonTwo2 = SingletonTwo.instance;
 
-  SingletonTwo singletonTwo3 = SingletonTwo._instance;
+  SingletonTwo singletonTwo3 = SingletonTwo._instance; // 懒汉式时不要这样用
   SingletonTwo singletonTwo4 = SingletonTwo._getInstance();
-  SingletonTwo singletonTwo5 = SingletonTwo._internal();
+  SingletonTwo singletonTwo5 = SingletonTwo._internal(); // 不要在单例类外部调用
   print('singletonTwo1 is ${singletonTwo1.hashCode}');
   print('singletonTwo2 is ${singletonTwo2.hashCode}');
   print('singletonTwo3 is ${singletonTwo3.hashCode}');
@@ -355,8 +365,9 @@ class SingletonOne {
 
 // 懒汉式
 class SingletonTwo {
-  static SingletonTwo get instance => _getInstance();
   static SingletonTwo _instance;
+
+  static SingletonTwo get instance => _getInstance();
 
   factory SingletonTwo() => _getInstance();
 
@@ -400,6 +411,7 @@ testDynamicAndObject() {
 testException() {
   try {
     // 可能引发异常的代码
+    throw FormatException();
   } on IntegerDivisionByZeroException {
     print('IntegerDivisionByZeroException');
 

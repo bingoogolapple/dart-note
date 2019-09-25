@@ -27,6 +27,8 @@ testFuture() {
     print(value);
   }).catchError((error) {
     print('testFuture successFuture catchError');
+  }).whenComplete(() { // 不管成功还是失败都会调用 whenComplete
+    print('testFuture successFuture whenComplete');
   });
   print('testFuture 调用了 successFuture');
 
@@ -34,6 +36,8 @@ testFuture() {
     print(value);
   }).catchError((error) {
     print('testFuture errorFuture catchError $error');
+  }).whenComplete(() { // 不管成功还是失败都会调用 whenComplete
+    print('testFuture errorFuture whenComplete');
   });
   print('testFuture 调用了 errorFuture');
 }
@@ -74,21 +78,35 @@ testAsync() async {
 testMicrotask() {
   // Microtask 是在 Event Queue 中的某一个 Event 处理完后才会执行，而不是在执行 Event 期间插进去执行的
   scheduleMicrotask(() {
-    print('microtask');
+    print('microtask1');
   });
   print('testMicrotask');
   StringBuffer stringBuffer = StringBuffer();
-  for (int i = 0; i < 1000000; i++) {
+  for (int i = 0; i < 100; i++) {
+    stringBuffer.write(i);
+  }
+  print(stringBuffer.toString());
+
+  scheduleMicrotask(() {
+    print('microtask2');
+  });
+
+  stringBuffer = StringBuffer();
+  for (int i = 0; i < 50; i++) {
     stringBuffer.write(i);
   }
   print(stringBuffer.toString());
 //  testMicrotask
 //  0123456.........
-//  microtask
+//  0123456.........
+//  main
+//  microtask1
+//  microtask2
 }
 
 main() {
 //  testAsync();
 //  testNotAsync();
   testMicrotask();
+  print('main');
 }

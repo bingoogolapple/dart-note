@@ -34,6 +34,7 @@ void main(List<String> args) {
   func3(p1, {p2, p3}) {
     print('func3 p1 = $p1, p2 = $p2, p3 = $p3');
   }
+
   print(func3); // Closure: (dynamic, {dynamic p2, dynamic p3}) => Null
   func3(1);
   func3(1, p2: 2);
@@ -51,6 +52,8 @@ void main(List<String> args) {
     print('匿名 p1 = $p1, p2 = $p2, p3 = $p3');
   })(1, p2: 2);
 
+  ((p1, {p2, p3}) => print('箭头匿名 p1 = $p1, p2 = $p2, p3 = $p3'))(1, p2: 2);
+
   // 方法参数
   [1, 2, 3, 4].forEach(print);
   print(testFunParam(['p1', 'p2'], times));
@@ -66,8 +69,12 @@ void main(List<String> args) {
   func6(1);
   func6(2);
   var func7 = testClosure3();
-  func7(1);
-  func7(2);
+  func7(1.toDouble());
+  print(func7(2.1));
+
+  print(func5.runtimeType); // (dynamic) => Null
+  print(func6.runtimeType); // (dynamic) => Null
+  print(func7.runtimeType); // (double) => double
 }
 
 test1() {
@@ -176,7 +183,9 @@ testClosure2() {
 testClosure3() {
   int count = 100;
 
-  return (p1) {
-    print(count + p1);
+  return (double p1) {
+    double result = count + p1.toDouble();
+    print(result);
+    return result;
   };
 }

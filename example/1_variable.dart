@@ -10,22 +10,36 @@ main() {
   print(a);
   print(a.runtimeType); // String
 
-  // 强类型定义方式：用具体类型定义变量时，同父类型可以转换，和 Java 一样
+  // 强类型定义方式：用具体类型定义变量时，同父类型可以动态转换，和 Java 一样
   num b = 1;
   print(b);
+  print(b.runtimeType);
   b = 3.14;
   print(b);
+  print(b.runtimeType);
+  print("-------");
   // Error: A value of type 'dart.core::String' can't be assigned to a variable of type 'dart.core::int'.
 //  b = "BGA";
 
+  int c = 1;
+  // Error: A value of type 'double' can't be assigned to a variable of type 'int'.
+//  c = 3.14;
+
+  double d = 3.14;
+  d = 1;
+  print(d.runtimeType); // double
+  d = null;
+  print(d); // null
+  print(d.runtimeType); // Null
+
   // 使用 final 声明一个只能赋值一次的变量
-  final c = 1;
-  // Error: Setter not found: 'c'
-//  c = 2;
+  final e = 1;
+  // Error: Setter not found: 'e'
+//  e = 2;
   // 使用 const 声明编译期常量，在编译期就能确定它的值
-  const d = 1;
-  // Error: Setter not found: 'd'
-//  d = 2;
+  const f = 1;
+  // Error: Setter not found: 'f'
+//  d = f;
 
   testDefaultValue();
   new TestConstant("Dart").test();
@@ -66,6 +80,9 @@ testDefaultValue() {
   print(e);
   double f;
   print(f);
+  print(f.runtimeType); // Null
   String g;
   print(g);
+  print(g.runtimeType); // Null
+  print('=============');
 }

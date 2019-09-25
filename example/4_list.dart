@@ -61,16 +61,25 @@ testList() {
   g.add("BGA");
   g.add(3);
   print(g.runtimeType); // List<Object>
+
+  print([0, 1, 2, 3, 4, 5].sublist(1, 3)); // 包含开始，不包含结尾，[1, 2]
 }
 
 testSet() {
   var a = Set();
+  print(a.runtimeType); // _CompactLinkedHashSet<dynamic>
   a.add(true);
+  print(a.runtimeType); // _CompactLinkedHashSet<dynamic>
   a.add('BGA');
   print(a.runtimeType); // _CompactLinkedHashSet<dynamic>
   var b = Set<String>();
   b.add('BGA');
   print(b.runtimeType); // _CompactLinkedHashSet<String>
+  var c = {true, 'BGA', 'BGA'};
+  print(c); // {true, BGA}
+  print(c.runtimeType); // _CompactLinkedHashSet<Object>
+  print({1, 2, 3, 4}.difference({1, 3, 5})); // 求差集 {2, 4}
+  print({1, 2, 3, 4}.union({1, 3, 5})); // 求差集 {1, 2, 3, 4, 5}
   // 可以通过 List 的 toSet 方法生成
   print([1, 1, 2, 2, 3, 3].toSet()); // {1, 2, 3}
 }
