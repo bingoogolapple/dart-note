@@ -16,5 +16,7 @@ dependencies:
 
   shelf_router: ^0.7.1 # https://pub.flutter-io.cn/packages/shelf_router
 
+  dio: ^3.0.3 # https://github.com/flutterchina/dio
+
 dev_dependencies:
   test: ^1.6.11

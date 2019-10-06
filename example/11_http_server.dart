@@ -87,6 +87,9 @@ test6() async {
   BLOG_REPO['$currentMaxId'] = {'id': currentMaxId, 'title': '标题$currentMaxId', 'content': '内容$currentMaxId'};
 
   var app = Router()
+    ..get('/token', (shelf.Request request) {
+      return responseJson({'code': 0, 'msg': '获取token成功', 'data': 'TODO'});
+    })
     ..get('/blogs', (shelf.Request request) {
       return responseJson({'code': 0, 'msg': '获取博客列表成功', 'data': BLOG_REPO.values.toList()});
     })
@@ -125,7 +128,7 @@ test6() async {
       }
     })
     ..delete('/blogs/<blogId>', (shelf.Request request, String blogId) {
-      BLOG_REPO.remove('blogId');
+      BLOG_REPO.remove('$blogId');
       return responseJson({'code': 0, 'msg': '删除$blogId成功'});
     })
     ..get('/blogs/<blogId>', (shelf.Request request, String blogId) {
