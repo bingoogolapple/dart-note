@@ -50,7 +50,7 @@ test3() {
 test4() async {
   var virDir;
   virDir = new VirtualDirectory(Platform.script.resolve('download').toFilePath())
-    ..allowDirectoryListing = true
+    ..allowDirectoryListing = true // 是否获取文件和目录清单，为 false 则不获取
     ..errorPageHandler = (HttpRequest request) {
       // 覆盖默认的错误处理页面，要注意顺序（错误处理要放在正常处理前面，否则无效）
       request.response
@@ -66,6 +66,7 @@ test4() async {
 
   HttpServer.bind(InternetAddress.loopbackIPv4, 8888).then((server) {
     server.listen((request) {
+      // 将文件和目录清单发送到客户端
       virDir.serveRequest(request);
     });
   });
