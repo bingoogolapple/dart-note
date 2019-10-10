@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:convert' show json;
 
+// test3
+import 'package:shelf_static/shelf_static.dart' as shelf_static;
+
 // test3、test4
 import 'package:http_server/http_server.dart';
 
@@ -15,7 +18,7 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart';
 
 main() async {
-  test6();
+  test3();
 }
 
 test1() async {
@@ -35,22 +38,20 @@ test2() {
 }
 
 // 静态文件服务器
-test3() {
-  final DOWNLOAD_DIR_PATH = Platform.script.resolve('download').toFilePath();
-  final virDir = new VirtualDirectory(DOWNLOAD_DIR_PATH) // 从根路径获取文件和目录清单
-    ..allowDirectoryListing = true; // 是否获取文件和目录清单，为 false 则不获取
-  HttpServer.bind(InternetAddress.loopbackIPv4, 8888).then((server) {
-    server.listen((request) {
-      // 将文件和目录清单发送到客户端
-      virDir.serveRequest(request);
-    });
-  });
+test3() async {
+  var staticHandler = shelf_static.createStaticHandler(Platform.script.resolve('web').toFilePath(), defaultDocument: 'index.html', listDirectories: true);
+
+//  var server = await shelf_io.serve(staticHandler, InternetAddress.loopbackIPv4, 8888);
+  final handler = shelf.Pipeline().addMiddleware(shelf.logRequests()).addHandler(staticHandler);
+  var server = await shelf_io.serve(handler, InternetAddress.loopbackIPv4, 8888);
+  print('Server running on localhost:${server.port}');
 }
 
+// 静态文件服务器
 test4() async {
   var virDir;
-  virDir = new VirtualDirectory(Platform.script.resolve('download').toFilePath())
-    ..allowDirectoryListing = true // 是否获取文件和目录清单，为 false 则不获取
+  virDir = new VirtualDirectory(Platform.script.resolve('web').toFilePath())
+    ..allowDirectoryListing = true // 是否获取目录清单，为 false 则不获取
     ..errorPageHandler = (HttpRequest request) {
       // 覆盖默认的错误处理页面，要注意顺序（错误处理要放在正常处理前面，否则无效）
       request.response
@@ -59,9 +60,11 @@ test4() async {
         ..close();
     }
     ..directoryHandler = (dir, request) {
-      // 用指定的文件覆盖默认返回的目录清单
-      var indexUri = new Uri.file(dir.path).resolve('test.txt'); // 获取文件的路径
-      virDir.serveFile(new File(indexUri.toFilePath()), request); // 返回指定的文件
+      if (request.uri.path == '/') {
+        // 用指定的文件覆盖默认返回的目录清单
+        var indexUri = new Uri.file(dir.path).resolve('index.html'); // 获取文件的路径
+        virDir.serveFile(new File(indexUri.toFilePath()), request); // 返回指定的文件
+      }
     };
 
   HttpServer.bind(InternetAddress.loopbackIPv4, 8888).then((server) {
