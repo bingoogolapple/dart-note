@@ -6,7 +6,7 @@ import 'dart:convert' show json;
 // test3
 import 'package:shelf_static/shelf_static.dart' as shelf_static;
 
-// test3、test4
+// test4
 import 'package:http_server/http_server.dart';
 
 // test5

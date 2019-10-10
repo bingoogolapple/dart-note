@@ -1,7 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-
-import 'package:logging/logging.dart';
 
 main() {
 //  printEnv();
@@ -20,6 +17,7 @@ void printEnv() {
   print('localHostname=> ${Platform.localHostname}'); // wanghao.local
   print('pathSeparator=> ${Platform.pathSeparator}'); // /
   print('packageConfig=> ${Platform.packageConfig}'); // null
+  print('executable=> ${Platform.executable}'); // /Applications/develop/dart-sdk/bin/dart
   print('Dart 版本=> ${Platform.version}'); // 2.5.1 (Fri Sep 27 12:28:49 2019 +0200) on "macos_x64"
 
   for (String value in Platform.executableArguments) {
